@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>图书管理页面</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="renderer" content="webkit">
+  <link rel="stylesheet" href="./styles/login1.css" />
+  <link rel="stylesheet" href="./styles/register.css" />
+</head>
+
+<body>  
+  <div class="xtx-wrapper">
+    <div class="container">
+      <!-- 卡片 -->
+      <div class="xtx-card">
+        <h3>新用户注册</h3>
+        <form class="xtx-form">
+          <div data-prop="username" class="xtx-form-item">
+            <span class="iconfont icon-zhanghao"></span>
+            用户名称  <input name="username" type="text" >
+            <span class="msg"></span>
+          </div>
+           <div data-prop="password" class="xtx-form-item">
+            <span class="iconfont icon-suo"></span>
+           设置密码  <input name="password" type="password" >
+            <span class="msg"></span>
+          </div>
+          <div class="select">
+            <label>
+                <input type="radio" name="identity" value="A"> 管理员
+                <input type="radio" name="identity" value="B"> 老师
+                <input type="radio" name="identity" value="C"> 学生
+            </label>
+            
+          </div>
+          <br>
+          <div class="xtx-form-item">
+            <button class="submit">下一步</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <script>
+    let proxy 
+    window.onload = function() {
+    
+    // 生成代理对象
+    const proxy = Object.create(proxyObj) 
+  
+    // 代理表单元素
+    proxy.username = document.querySelector('[name="username"]')
+    proxy.password = document.querySelector('[name="password"]')
+    proxy.form = document.querySelector('form')
+    proxy.identity=document.querySelector('[name="identity"]')  
+    function verifyName() {
+      // console.log(11)
+      const input = proxy.username
+      // 验证逻辑
+      // 2.4 定规则  用户名
+      const reg = /^[a-zA-Z0-9-_]{6,10}$/
+      if (!reg.test(proxy.username.value)) {
+        // console.log(11)
+        input.innerText = '输入不合法,请输入6~10位'
+        return false
+      }
+      // 2.5 合法的 就清空span
+      input.innerText = ''
+      return true
+    } 
+    
+    function verifyPwd() {
+      // console.log(11)
+      const input = proxy.password
+      // 5.4 定规则  密码
+      const reg = /^[a-zA-Z0-9-_]{6,20}$/
+      if (!reg.test(proxy.password.value)) {
+        // console.log(11)
+        input.innerText = '输入不合法,6~20位数字字母符号组成'
+        return false
+      }
+      // 5.5 合法的 就清空span
+      input.innerText = ''
+      return true
+    }
+    
+    const form = proxy.form 
+    form.addEventListener('submit', async function (e){
+      e.preventDefault()
+      if (!verifyName()) 
+      return
+      e.preventDefault()
+      // if (!verifyPhone()) e.preventDefault()
+      // if (!verifyCode()) e.preventDefault()
+      if (!verifyPwd())
+      return
+      e.preventDefault()
+      // if (!verifyConfirm()) e.preventDefault()
+    const userID= proxy.username.value
+    const password = proxy.password.value
+    const identity = proxy.identity.value  
+      const data={
+        userID,
+        password,
+        identity
+      }
+      try {
+    const response = await fetch('http://8.130.77.76:3000/api/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)  
+    })
+    
+    const result = await response.json()
+    console.log(result)
+    console.log('注册成功!')
+
+  } catch(error) {
+    console.log(error.message) 
+    console.log(error.response)
+    console.log(error.statusText)
+    console.log(error.stack) 
+  }
+ })
+ }
+      const proxyObj = 
+      {
+        get(target, key) {
+          console.log(`获取 ${key} 属性的值`)
+          return target[key]
+        },
+    
+      set(target, key, value) {
+        console.log(`设置 ${key} 属性值为 ${value}`)
+        target[key] = value
+        return true
+      }
+    }
+ </script>
+</body>
+</html>
